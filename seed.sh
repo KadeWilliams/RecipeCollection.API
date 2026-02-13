@@ -1,0 +1,1 @@
+docker exec -i recipecollectionapi-db-1 psql -U recipecollectionuser -d recipecollection < recipe-collection-seed.sql

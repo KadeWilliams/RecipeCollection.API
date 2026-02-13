@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: 1234 
+      POSTGRES_USER: recipecollectionuser # Optional: sets a custom user name
+      POSTGRES_DB: recipecollection # Optional: creates a default database
+    ports:
+      - "5431:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+
+volumes:
+  pgdata:
