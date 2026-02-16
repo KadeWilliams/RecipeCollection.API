@@ -29,7 +29,32 @@ public class RecipeRepository : IRecipeRepository
 
     public async Task<Recipe?> GetByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        const string sql = @"SELECT * FROM recipe WHERE id = @id";
+        using var conn = _context.GetConnection();
+        var recipe = await conn.QueryFirstOrDefaultAsync<Recipe>
+        (
+            sql,
+            new { id }
+        );
+
+        if (recipe == null) return null;
+
+        const string sql2 = @"
+            SELECT ri.*, i.* FROM recipe_ingredient ri INNER JOIN ingredient i on ri.ingredient_id = i.id WHERE ri.recipe_id = @RecipeId 
+        ";
+        var ingredients = await conn.QueryAsync<RecipeIngredient, Ingredient, RecipeIngredient>
+        (
+            sql2,
+            (ri, i) =>
+            {
+                ri.Ingredient = i;
+                return ri;
+            },
+            new { RecipeId = id },
+            splitOn: "Id"
+        );
+        recipe.RecipeIngredients = ingredients.ToList();
+        return recipe;
         //return await _context.Recipes
         //    .Include(r => r.RecipeIngredients)
         //        .ThenInclude(ri => ri.Ingredient)
@@ -39,6 +64,7 @@ public class RecipeRepository : IRecipeRepository
         //    .Include(r => r.RecipeSeasons)
         //        .ThenInclude(rs => rs.Season)
         //    .FirstOrDefaultAsync(r => r.Id == id);
+
     }
 
     public async Task<Recipe> AddAsync(Recipe recipe)

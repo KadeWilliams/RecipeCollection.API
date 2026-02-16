@@ -8,7 +8,7 @@ public static class RecipeEndpoints
 {
     public static void MapRecipeEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("/api/recipes");
+        RouteGroupBuilder? group = app.MapGroup("/api/recipes");
 
         group.MapGet("/", async (IRecipeRepository repo) =>
         {
