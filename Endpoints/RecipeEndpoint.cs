@@ -36,6 +36,12 @@ public static class RecipeEndpoints
             return Results.Created($"/api/recipes/{recipe.Id}", recipe.ToDto());
         });
 
+        group.MapPut("/", async (UpdateRecipeRequest request, IRecipeRepository repo) =>
+        {
+            var recipe = await repo.UpdateAsync(request);
+            return Results.Accepted($"/api/recipes/{recipe.Id}", recipe.ToDto());
+        });
+
         group.MapDelete("/{id}", async (int id, IRecipeRepository repo) =>
         {
             var deleted = await repo.DeleteAsync(id);

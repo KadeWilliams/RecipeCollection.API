@@ -209,21 +209,124 @@ public class RecipeRepository : IRecipeRepository
         //await _context.SaveChangesAsync();
         //return recipe;
     }
-    //public async Task<Recipe> UpdateAsync(Recipe recipe)
-    //{
-    //    using var conn = _context.GetConnection();
-    //    const string updateSql = @"
 
-    //        FROM step s 
-    //        WHERE s.recipe_id = @RecipeId
-    //    ";
+    public async Task<Recipe> UpdateAsync(UpdateRecipeRequest recipeRequest)
+    {
+        using var conn = _context.GetConnection();
+        conn.Open();
+        using var tran = conn.BeginTransaction();
 
-    //    await conn.ExecuteAsync(deleteSql, new { RecipeId = id });
-    //    throw new NotImplementedException();
-    //    //_context.Recipes.Add(recipe);
-    //    //await _context.SaveChangesAsync();
-    //    //return recipe;
-    //}
+        try
+        {
+            const string recipeSql = @"
+                UPDATE recipe 
+                SET
+                    title = @Title,
+                    description = @Description,
+                    link = @Link,
+                    cookbook = @Cookbook,
+                    cookbook_image_url = @CookbookImageUrl,
+                    recipe_image_url = @RecipeImageUrl,
+                    is_favorite = @IsFavorite,
+                    cooked = @Cooked,
+                    date_cooked = @DateCooked,
+                    chef = @Chef
+                WHERE id = @Id
+            ";
+
+            var recipeId = await conn.ExecuteAsync(recipeSql, recipeRequest, tran);
+
+            await conn.ExecuteAsync("DELETE FROM recipe_ingredient WHERE recipe_id = @RecipeId", new { RecipeId = recipeId });
+            await conn.ExecuteAsync("DELETE FROM step WHERE recipe_id = @RecipeId", new { RecipeId = recipeId });
+            await conn.ExecuteAsync("DELETE FROM recipe_meal_type WHERE recipe_id = @RecipeId", new { RecipeId = recipeId });
+            await conn.ExecuteAsync("DELETE FROM recipe_season WHERE recipe_id = @RecipeId", new { RecipeId = recipeId });
+
+            foreach (var ingredientDto in recipeRequest.Ingredients)
+            {
+                const string getIngredientsSql = @"
+                    INSERT INTO ingredient (name)
+                    Values (@Name) 
+                    ON CONFLICT(NAME) DO UPDATE SET name = EXCLUDED.name
+                    RETURNING id
+                ";
+
+                var ingredientId = await conn.ExecuteScalarAsync<int>
+                (
+                    getIngredientsSql,
+                    new { Name = ingredientDto.IngredientName },
+                    tran
+                );
+
+                const string linkSql = @"
+                    INSERT INTO recipe_ingredient (recipe_id, ingredient_id, amount, unit, is_optional, note)
+                    VALUES (@RecipeId, @IngredientId, @Amount, @Unit, @IsOptional, @Note)
+                ";
+
+                await conn.ExecuteAsync
+                (
+                    linkSql,
+                    new
+                    {
+                        RecipeId = recipeId,
+                        IngredientId = ingredientId,
+                        ingredientDto.Amount,
+                        ingredientDto.Unit,
+                        ingredientDto.IsOptional,
+                        ingredientDto.Note
+                    },
+                    tran
+                );
+            }
+
+            for (int i = 0; i < recipeRequest.Steps.Count; i++)
+            {
+                const string stepSql = @"
+                        INSERT INTO step (recipe_id, step_number, description)
+                        VALUES (@RecipeId, @StepNumber, @Description)
+                    ";
+
+                await conn.ExecuteAsync
+                (
+                    stepSql,
+                    new
+                    {
+                        RecipeId = recipeId,
+                        StepNumber = i + 1,
+                        Description = recipeRequest.Steps[i]
+                    },
+                    tran
+                );
+            }
+
+            foreach (var meal in recipeRequest.Meals)
+            {
+                const string mealSql = @"
+                        INSERT INTO recipe_meal_type (recipe_id, meal_type_id)
+                        VALUES (@RecipeId, (SELECT id from reference.meal_type WHERE name = @MealType))
+                    ";
+
+                await conn.ExecuteAsync(mealSql, new { RecipeId = recipeId, MealType = meal }, tran);
+            }
+
+            foreach (var season in recipeRequest.Seasons)
+            {
+                const string seasonSql = @"
+                        INSERT INTO recipe_season (recipe_id, season_id)
+                        VALUES (@RecipeId, (SELECT id from reference.season WHERE name = @Season))
+                    ";
+
+                await conn.ExecuteAsync(seasonSql, new { RecipeId = recipeId, Season = season }, tran);
+            }
+
+            tran.Commit();
+            return await GetByIdAsync(recipeId);
+        }
+        catch (Exception exc)
+        {
+            tran.Rollback();
+            throw;
+        }
+    }
 
     public async Task<bool> DeleteAsync(int id)
     {
