@@ -72,13 +72,13 @@ CREATE TABLE IF NOT EXISTS recipe_ingredient (
 );
 
 -- Insert reference data
-INSERT INTO reference.season (season) VALUES
+INSERT INTO reference.season (name) VALUES
 ('spring'),
 ('summer'),
 ('fall'),
 ('winter');
 
-INSERT INTO reference.meal_type (meal_type) VALUES
+INSERT INTO reference.meal_type (name) VALUES
 ('breakfast'),
 ('lunch'),
 ('dinner'),
@@ -122,15 +122,15 @@ INSERT INTO recipe (
 
 -- Insert recipe-meal type relationships (assuming recipe_id = 1)
 INSERT INTO recipe_meal_type (recipe_id, meal_type_id) VALUES
-(1, (SELECT id FROM reference.meal_type WHERE meal_type = 'lunch')),
-(1, (SELECT id FROM reference.meal_type WHERE meal_type = 'dinner'));
+(1, (SELECT id FROM reference.meal_type WHERE name = 'lunch')),
+(1, (SELECT id FROM reference.meal_type WHERE name = 'dinner'));
 
 -- Insert recipe-season relationships
 INSERT INTO recipe_season (recipe_id, season_id) VALUES
-(1, (SELECT id FROM reference.season WHERE season = 'spring')),
-(1, (SELECT id FROM reference.season WHERE season = 'summer')),
-(1, (SELECT id FROM reference.season WHERE season = 'fall')),
-(1, (SELECT id FROM reference.season WHERE season = 'winter'));
+(1, (SELECT id FROM reference.season WHERE name = 'spring')),
+(1, (SELECT id FROM reference.season WHERE name = 'summer')),
+(1, (SELECT id FROM reference.season WHERE name = 'fall')),
+(1, (SELECT id FROM reference.season WHERE name = 'winter'));
 
 -- Insert recipe ingredients
 INSERT INTO recipe_ingredient (recipe_id, ingredient_id, amount, unit, is_optional, note) VALUES

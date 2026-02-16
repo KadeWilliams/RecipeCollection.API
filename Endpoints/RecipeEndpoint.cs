@@ -1,4 +1,4 @@
-using RecipeCollection.API.Entities;
+using RecipeCollection.API.DTOs;
 using RecipeCollection.API.Mappers;
 using RecipeCollection.API.Repositories;
 
@@ -30,10 +30,16 @@ public static class RecipeEndpoints
             return Results.Created($"/api/recipes/{recipe.Id}", recipe.ToDto());
         });
         */
-        group.MapPost("/", async (Recipe recipe, IRecipeRepository repo) =>
+        group.MapPost("/", async (CreateRecipeRequest request, IRecipeRepository repo) =>
         {
-            await repo.AddAsync(recipe);
+            var recipe = await repo.CreateAsync(request);
             return Results.Created($"/api/recipes/{recipe.Id}", recipe.ToDto());
+        });
+
+        group.MapDelete("/{id}", async (int id, IRecipeRepository repo) =>
+        {
+            var deleted = await repo.DeleteAsync(id);
+            return deleted ? Results.NoContent() : Results.NotFound();
         });
     }
 }
