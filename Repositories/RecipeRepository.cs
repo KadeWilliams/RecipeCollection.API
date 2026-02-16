@@ -115,6 +115,7 @@ public class RecipeRepository : IRecipeRepository
                 VALUES
                 (@Title, @Description, @Link, @Cookbook, @CookbookImageUrl,
                 @RecipeImageUrl, @IsFavorite, @Cooked, @DateCooked, @Chef)
+                RETURNING id
             ";
 
             var recipeId = await conn.ExecuteScalarAsync<int>(recipeSql, recipeRequest, tran);
@@ -180,7 +181,7 @@ public class RecipeRepository : IRecipeRepository
             {
                 const string mealSql = @"
                         INSERT INTO recipe_meal_type (recipe_id, meal_type_id)
-                        VALUES (@RecipeId, (SELECT id from reference.meal_type_id WHERE name = @MealType)
+                        VALUES (@RecipeId, (SELECT id from reference.meal_type WHERE name = @MealType))
                     ";
 
                 await conn.ExecuteAsync(mealSql, new { RecipeId = recipeId, MealType = meal }, tran);
@@ -189,8 +190,8 @@ public class RecipeRepository : IRecipeRepository
             foreach (var season in recipeRequest.Seasons)
             {
                 const string seasonSql = @"
-                        INSERT INTO recipe_season (recipe_id, seasons_id)
-                        VALUES (@RecipeId, (SELECT id from reference.season WHERE name = @Season)
+                        INSERT INTO recipe_season (recipe_id, season_id)
+                        VALUES (@RecipeId, (SELECT id from reference.season WHERE name = @Season))
                     ";
 
                 await conn.ExecuteAsync(seasonSql, new { RecipeId = recipeId, Season = season }, tran);
@@ -199,7 +200,7 @@ public class RecipeRepository : IRecipeRepository
             tran.Commit();
             return await GetByIdAsync(recipeId);
         }
-        catch
+        catch (Exception exc)
         {
             tran.Rollback();
             throw;
