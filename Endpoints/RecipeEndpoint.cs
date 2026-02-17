@@ -22,14 +22,6 @@ public static class RecipeEndpoints
             return recipe is null ? Results.NotFound() : Results.Ok(recipe.ToDto());
         });
 
-        /*
-        group.MapPost("/", async (CreateRecipeRequest request, IRecipeRepository repo) =>
-        {
-            var recipe = request.ToEntity();
-            await repo.AddAsync(recipe);
-            return Results.Created($"/api/recipes/{recipe.Id}", recipe.ToDto());
-        });
-        */
         group.MapPost("/", async (CreateRecipeRequest request, IRecipeRepository repo) =>
         {
             var recipe = await repo.CreateAsync(request);
