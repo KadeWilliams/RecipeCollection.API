@@ -9,7 +9,7 @@ public class RecipeDto
     public string? RecipeImageUrl { get; set; }
     public bool IsFavorite { get; set; }
     public bool Cooked { get; set; }
-    public DateTime? DateCooked { get; set; }
+    public DateOnly? DateCooked { get; set; }
     public string Chef { get; set; } = string.Empty;
     public List<string> Meals { get; set; } = new();
     public List<string> Seasons { get; set; } = new();

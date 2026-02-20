@@ -4,13 +4,13 @@ public class Recipe
     public int Id { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public string? Link { get; set; }
-    public string? Cookbook { get; set; }
-    public string? CookbookImageUrl { get; set; }
-    public string? RecipeImageUrl { get; set; }
+    public string? Link { get; set; } = string.Empty;
+    public string? Cookbook { get; set; } = string.Empty;
+    public string? CookbookImageUrl { get; set; } = string.Empty;
+    public string? RecipeImageUrl { get; set; } = string.Empty;
     public bool IsFavorite { get; set; }
     public bool Cooked { get; set; }
-    public DateTime? DateCooked { get; set; }
+    public DateOnly? DateCooked { get; set; }
     public string Chef { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
 

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using RecipeCollection.API.DTOs;
 using RecipeCollection.API.Mappers;
 using RecipeCollection.API.Repositories;
@@ -22,13 +23,13 @@ public static class RecipeEndpoints
             return recipe is null ? Results.NotFound() : Results.Ok(recipe.ToDto());
         });
 
-        group.MapPost("/", async (CreateRecipeRequest request, IRecipeRepository repo) =>
+        group.MapPost("/", async ([FromBody] CreateRecipeRequest request, IRecipeRepository repo) =>
         {
             var recipe = await repo.CreateAsync(request);
             return Results.Created($"/api/recipes/{recipe.Id}", recipe.ToDto());
         });
 
-        group.MapPut("/", async (UpdateRecipeRequest request, IRecipeRepository repo) =>
+        group.MapPut("/", async ([FromBody] UpdateRecipeRequest request, IRecipeRepository repo) =>
         {
             var recipe = await repo.UpdateAsync(request);
             return Results.Accepted($"/api/recipes/{recipe.Id}", recipe.ToDto());
