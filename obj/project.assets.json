@@ -264,25 +264,27 @@
     ]
   },
   "packageFolders": {
-    "/home/kade/.nuget/packages/": {}
+    "C:\\Users\\kkwilli1\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/kade/Developer/RecipeCollection.API/RecipeCollection.API.csproj",
+      "projectUniqueName": "C:\\_Developer\\csharp\\RecipeCollection.API\\RecipeCollection.API.csproj",
       "projectName": "RecipeCollection.API",
-      "projectPath": "/home/kade/Developer/RecipeCollection.API/RecipeCollection.API.csproj",
-      "packagesPath": "/home/kade/.nuget/packages/",
-      "outputPath": "/home/kade/Developer/RecipeCollection.API/obj/",
+      "projectPath": "C:\\_Developer\\csharp\\RecipeCollection.API\\RecipeCollection.API.csproj",
+      "packagesPath": "C:\\Users\\kkwilli1\\.nuget\\packages\\",
+      "outputPath": "C:\\_Developer\\csharp\\RecipeCollection.API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/kade/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\kkwilli1\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "https://api.nuget.org/v3/index.json": {}
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://hlnexusrm.hobbylobby.corp/repository/nugetV3/index.json": {}
       },
       "frameworks": {
         "net8.0": {
@@ -299,8 +301,7 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      },
-      "SdkAnalysisLevel": "10.0.100"
+      }
     },
     "frameworks": {
       "net8.0": {
@@ -326,16 +327,6 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[8.0.22, 8.0.22]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Host.linux-x64",
-            "version": "[8.0.22, 8.0.22]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -344,7 +335,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.100/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
