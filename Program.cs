@@ -11,13 +11,17 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowReactApp", builder =>
     {
         //builder.AllowAnyOrigin();
-        builder.WithOrigins("http://localhost:3000")
+        builder.WithOrigins(
+                "http://localhost:3000",
+                "https://recipe-collection-six.vercel.app"
+            )
             .AllowAnyMethod()
             .AllowAnyHeader();
     });
 });
 
 var app = builder.Build();
+app.UseCors("AllowReactApp");
 
 app.MapGet("/", () => "Hello World!");
 
